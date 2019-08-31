@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>轮播图</title>
+		<link rel="stylesheet" type="text/css" href="https://at.alicdn.com/t/font_861679_va46fm176b.css"/>
+		<style type="text/css">
+			body,ul,li{
+				margin: 0;
+				padding: 0;
+			}
+			li{
+				list-style: none;
+			}
+			.ddd{
+				width: 600px;
+				margin: 0 auto;
+				position: relative;
+			}
+			.main{
+				width: 600px;
+				height: 400px;
+				/* border: 1px solid red;
+				box-sizing: border-box; */
+				position: relative;
+			}
+			.main div{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				display: none;
+			}
+			.main div img{
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.slideBtn{
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				position: absolute;
+				bottom: 10px;
+			}
+			.lbtanniu{
+				display: flex;
+				justify-content: center;
+				/* margin-top: 20px; */
+				background: rgba(255, 255, 255, 0.5);
+				border-radius: 20px;
+				padding: 5px 10px;
+			}
+			.lbtanniu li{
+				width: 14px;
+				height: 14px;
+				border: 1px solid red;
+				box-sizing: border-box;
+				border-radius: 20px;
+				margin-right: 14px;
+			}
+			.lbtanniu li:last-of-type{
+				margin-right: 0;
+			}
+			
+			.active{
+				background: #ff0074;
+				border: 1px solid transparent;
+			}
+			
+			.prev,.next{
+				width: 20px;
+				height: 30px;
+				line-height: 26px;
+				/* display: inline-block; */
+				position: absolute;
+				top: 50%;
+				margin-top: -10px;
+				background: rgba(0, 0, 0, 0.5);
+				color: white;
+				/* text-align: center; */
+				font-size: 20px;
+			}
+			.prev{
+				left: 0;
+				border-top-right-radius: 20px;
+				border-bottom-right-radius: 20px;
+			}
+			.next{
+				text-indent: 4px;
+				right: 0;
+				border-top-left-radius: 20px;
+				border-bottom-left-radius: 20px;
+			}
+			
+		</style>
+	</head>
+	
+	<body>
+		<div class="ddd">
+			<div class="main">
+				<div><img src="images/timg01.jpg" alt=""></div>
+				<div><img src="images/timg02.jpg" alt=""></div>
+				<div><img src="images/timg03.jpg" alt=""></div>
+				<div><img src="images/timg04.jpg" alt=""></div>
+				<div><img src="images/timg05.jpg" alt=""></div>
+				<div><img src="images/timg06.jpg" alt=""></div>
+			</div>
+			<div class="prev"><i class="iconfont i_zuojiantou"></i></div>
+			<div class="next"><i class="iconfont i_iconfonticonfonti2copycopy"></i></div>
+			<div class="slideBtn">
+				<ul class="lbtanniu">
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<script src="js/jquery-3.1.0.min.js"></script>
+		<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+		<script>
+			$(function(){
+				var index = 0;
+				var len = $('.main div').length;
+				console.info(len);
+				
+				var t = setInterval(lbt,3000);
+				$('.lbtanniu li').eq(0).addClass('active');
+				$('.main div').eq(0).show();
+				
+				// 封装
+				function lbt(){
+					index++;
+					if(index < len){
+						$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+						$('.lbtanniu li').eq(index).addClass('active').siblings().removeClass('active');
+					}else{
+						index = 0;
+						$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+						$('.lbtanniu li').eq(index).addClass('active').siblings().removeClass('active');
+					}
+				}
+				
+				// 点击切换按钮
+				$('.lbtanniu li').mouseenter(function(){
+					var currentI = $(this).index();
+					$(this).addClass('active').siblings().removeClass('active');
+					index = currentI;
+					$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+					clearInterval(t);
+				})
+				$('.lbtanniu li').mouseleave(function(){
+					t = setInterval(lbt,3000);
+				})
+				
+				// 鼠标移入，清除定时器，鼠标移出，开启定时器
+				$('.main,.prev,.next').hover(function(){
+					clearInterval(t);
+				},function(){
+					t = setInterval(lbt,3000);
+				})
+				
+				// 上一张
+				$('.prev').click(function(){
+					index--;
+					if(index < 0){
+						index = 5;
+						xx(index);
+					}else{
+						xx(index);
+					}
+					
+				})
+				
+				// 下一张
+				$('.next').click(function(){
+					index++;
+					if(index < len){
+						xx(index);
+					}else{
+						index = 0;
+						xx(index);
+					}
+					
+				})
+				
+				// 上一张
+				// $('.prev').click(function(){
+				// 	index--;
+				// 	if(index < 0){
+				// 		index = 5;
+				// 		$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+				// 		$('.lbtanniu li').eq(index).addClass('active').siblings().removeClass('active');
+				// 	}else{
+				// 		$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+				// 		$('.lbtanniu li').eq(index).addClass('active').siblings().removeClass('active');
+				// 	}
+				// })
+				
+				// 下一张
+				// $('.next').click(function(){
+				// 	index++;
+				// 	if(index < len){
+				// 		$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+				// 		$('.lbtanniu li').eq(index).addClass('active').siblings().removeClass('active');
+				// 	}else{
+				// 		index = 0;
+				// 		$('.main div').eq(index).fadeIn(500).siblings().fadeOut(300);
+				// 		$('.lbtanniu li').eq(index).addClass('active').siblings().removeClass('active');
+				// 	}
+				// })
+				
+				function xx(i){
+					$('.main div').eq(i).fadeIn(500).siblings().fadeOut(300);
+					$('.lbtanniu li').eq(i).addClass('active').siblings().removeClass('active');
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				var xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject();
+				console.info(xhr);
+				// var xhr = new XMLHttpRequest();
+				// xhr.onreadystatechange = function(){
+				// 	if(xhr.readyState === 4){
+				// 		if(xhr.status === 200){
+				// 			doresponse(xhr)
+				// 		}
+				// 	}
+				// }
+				// xhr.open('get','js/clipboard.min.js?key=123&word=大哥',true);
+				// xhr.send(null);
+				// 
+				// xhr.open('get','js/clipboard.min.js',true);
+				// xhr.send('?key=123&word=大哥'); // send方法里面传入的就是url中的参数
+				
+				
+				
+			})
+		</script>
+	</body>
+</html>
